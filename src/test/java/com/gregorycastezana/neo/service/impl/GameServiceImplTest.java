@@ -27,7 +27,7 @@ class GameServiceImplTest {
     @DisplayName("SERVICE LAYER ::: Create a character with success")
     void should_Be_Create_Character() {
         var request = CharacterDTO.builder()
-                .name("Test_Warrior_01")
+                .name("Test_Warrior")
                 .job("Warrior")
                 .build();
 

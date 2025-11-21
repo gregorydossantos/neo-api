@@ -102,6 +102,7 @@
                         <exclude>**/NeoApplication.class</exclude>
                         <exclude>**/config/**</exclude>
                         <exclude>**/domain/message/**</exclude>
+                        <exclude>**/domain/useful/**</exclude>
                         <exclude>**/model/**</exclude>
                         <exclude>**/rest/dto/request/**</exclude>
                         <exclude>**/rest/exceptionhandler/exception/**</exclude>

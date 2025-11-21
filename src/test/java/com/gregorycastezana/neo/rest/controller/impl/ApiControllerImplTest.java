@@ -50,7 +50,7 @@ class ApiControllerImplTest {
     @DisplayName("REST LAYER ::: Should be return a http status 201 - CREATED")
     void should_Be_Return_Success_When_Create_Character() {
         request = CharacterDTO.builder()
-                .name("Test_Warrior_01")
+                .name("Test_Warrior")
                 .job("Warrior")
                 .build();
 

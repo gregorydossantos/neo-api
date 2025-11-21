@@ -4,6 +4,8 @@ import com.gregorycastezana.neo.domain.usecase.IGameUseCase;
 import com.gregorycastezana.neo.model.Characters;
 import com.gregorycastezana.neo.rest.dto.request.CharacterDTO;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterDataIntegrityException;
+import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNameException;
+import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNameSizeException;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
@@ -14,6 +16,10 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.gregorycastezana.neo.domain.message.CommonsMessages.CHARACTER_ALREADY_REGISTER;
+import static com.gregorycastezana.neo.domain.message.CommonsMessages.INVALID_CHARACTER_NAME;
+import static com.gregorycastezana.neo.domain.message.CommonsMessages.SIZE_NAME_INVALID;
+import static com.gregorycastezana.neo.domain.useful.StringPattern.isValidName;
+import static com.gregorycastezana.neo.domain.useful.StringPattern.isInvalidSizeName;
 import static lombok.AccessLevel.PRIVATE;
 
 @Log4j2
@@ -31,6 +37,13 @@ public class GameUseCaseImpl implements IGameUseCase {
         log.info("Validate if character already exists by name {}", request.getName());
         if (characterExists(request.getName())) {
             throw new CharacterDataIntegrityException(CHARACTER_ALREADY_REGISTER);
+        }
+
+        if (isInvalidSizeName(request.getName())) {
+            throw new CharacterNameSizeException(SIZE_NAME_INVALID);
+        }
+        if(!isValidName(request.getName())) {
+            throw new CharacterNameException(INVALID_CHARACTER_NAME);
         }
 
         Characters.builder()
