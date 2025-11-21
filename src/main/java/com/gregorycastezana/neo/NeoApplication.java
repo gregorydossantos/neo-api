@@ -8,6 +8,6 @@ public class NeoApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(NeoApplication.class, args);
-	}
+    }
 
 }
