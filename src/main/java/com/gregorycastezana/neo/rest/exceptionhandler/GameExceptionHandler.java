@@ -3,6 +3,7 @@ package com.gregorycastezana.neo.rest.exceptionhandler;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterDataIntegrityException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNameException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNameSizeException;
+import com.gregorycastezana.neo.rest.exceptionhandler.exception.JobNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import static com.gregorycastezana.neo.domain.message.CommonsMessages.CHARACTER_ALREADY_REGISTER;
 import static com.gregorycastezana.neo.domain.message.CommonsMessages.INVALID_CHARACTER_NAME;
+import static com.gregorycastezana.neo.domain.message.CommonsMessages.JOB_NOT_FOUND;
 import static com.gregorycastezana.neo.domain.message.CommonsMessages.SIZE_NAME_INVALID;
 
 @ControllerAdvice
@@ -43,5 +45,11 @@ public class GameExceptionHandler {
             errorResponse.setMessage(error.getDefaultMessage());
         });
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(JobNotFoundException.class)
+    public ResponseEntity<ErrorResponse> jobNotFound(final JobNotFoundException ex) {
+        ErrorResponse error = new ErrorResponse(JOB_NOT_FOUND);
+        return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
     }
 }

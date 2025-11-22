@@ -3,6 +3,7 @@ package com.gregorycastezana.neo.rest.exceptionhandler;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterDataIntegrityException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNameException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNameSizeException;
+import com.gregorycastezana.neo.rest.exceptionhandler.exception.JobNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import static com.gregorycastezana.neo.domain.message.CommonsMessages.CHARACTER_ALREADY_REGISTER;
 import static com.gregorycastezana.neo.domain.message.CommonsMessages.INVALID_CHARACTER_NAME;
+import static com.gregorycastezana.neo.domain.message.CommonsMessages.JOB_NOT_FOUND;
 import static com.gregorycastezana.neo.domain.message.CommonsMessages.SIZE_NAME_INVALID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -64,5 +66,14 @@ class GameExceptionHandlerTest {
         ResponseEntity<ErrorResponse> response = gameExceptionHandler.paramsNotFound(exception);
         assertNotNull(response);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("REST LAYER ::: Should be throws Job Not Found Exception")
+    void should_Be_Throws_Job_Not_Found_Exception() {
+        ResponseEntity<ErrorResponse> response = gameExceptionHandler.jobNotFound(
+                new JobNotFoundException(JOB_NOT_FOUND));
+        assertNotNull(response);
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, response.getStatusCode());
     }
 }

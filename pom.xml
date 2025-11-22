@@ -19,6 +19,7 @@
         <openapi.version>2.0.4</openapi.version>
         <jacoco.version>0.8.12</jacoco.version>
         <rest-assured.version>5.4.0</rest-assured.version>
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
 	</properties>
 
 	<dependencies>
@@ -65,6 +66,11 @@
             <version>${rest-assured.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
 	</dependencies>
 
 	<build>
@@ -78,6 +84,11 @@
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
 						</path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
+                        </path>
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
@@ -105,6 +116,7 @@
                         <exclude>**/domain/useful/**</exclude>
                         <exclude>**/model/**</exclude>
                         <exclude>**/rest/dto/request/**</exclude>
+                        <exclude>**/rest/dto/response/**</exclude>
                         <exclude>**/rest/exceptionhandler/exception/**</exclude>
                         <exclude>**/rest/exceptionhandler/ErrorResponse.class</exclude>
                         <exclude>**/rest/path/**</exclude>

@@ -2,6 +2,7 @@ package com.gregorycastezana.neo.service.impl;
 
 import com.gregorycastezana.neo.domain.usecase.IGameUseCase;
 import com.gregorycastezana.neo.rest.dto.request.CharacterDTO;
+import com.gregorycastezana.neo.rest.dto.response.JobsResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,9 +11,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
@@ -34,5 +40,17 @@ class GameServiceImplTest {
         doNothing().when(gameUseCase).createCharacter(request);
         gameService.createCharacter(request);
         verify(gameUseCase, atLeastOnce()).createCharacter(request);
+    }
+
+    @Test
+    @DisplayName("SERVICE LAYER ::: Return a list of all jobs")
+    void should_Be_Return_List_With_All_Jobs() {
+        var request = CharacterDTO.builder()
+                .name("Test_Warrior")
+                .job("Warrior")
+                .build();
+
+        when(gameUseCase.getAllJobs()).thenReturn(List.of(mock(JobsResponse.class)));
+        assertNotNull(gameService.getAllJobs());
     }
 }

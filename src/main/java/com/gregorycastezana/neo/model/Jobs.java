@@ -9,8 +9,13 @@ import static lombok.AccessLevel.PRIVATE;
 @Data
 @Builder
 @FieldDefaults(level = PRIVATE)
-public class Characters {
-    String id;
+public class Jobs {
+    Long id;
     String name;
-    Jobs job;
+    Long healthPoints;
+    Long strength;
+    Long dexterity;
+    Long intelligence;
+    String attackModifier;
+    String speedModifier;
 }

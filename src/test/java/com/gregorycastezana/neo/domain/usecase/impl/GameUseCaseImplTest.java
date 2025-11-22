@@ -1,21 +1,34 @@
 package com.gregorycastezana.neo.domain.usecase.impl;
 
+import com.gregorycastezana.neo.domain.mapper.IGameMapper;
 import com.gregorycastezana.neo.rest.dto.request.CharacterDTO;
+import com.gregorycastezana.neo.rest.dto.response.JobsResponse;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterDataIntegrityException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNameException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNameSizeException;
+import com.gregorycastezana.neo.rest.exceptionhandler.exception.JobNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class GameUseCaseImplTest {
+
+    @Mock
+    IGameMapper mapper;
 
     @InjectMocks GameUseCaseImpl gameUseCase;
 
@@ -30,6 +43,13 @@ class GameUseCaseImplTest {
                 .build();
 
         gameUseCase.createCharacter(request);
+    }
+
+    @Test
+    @DisplayName("DOMAIN LAYER ::: Get all Jobs")
+    void should_Be_A_List_With_All_Jobs() {
+        when(mapper.toListResponse(anyList())).thenReturn(List.of(mock(JobsResponse.class)));
+        assertNotNull(gameUseCase.getAllJobs());
     }
 
     @Test
@@ -74,5 +94,16 @@ class GameUseCaseImplTest {
                 .build();
 
         assertThrows(CharacterNameSizeException.class, () -> gameUseCase.createCharacter(request));
+    }
+
+    @Test
+    @DisplayName("DOMAIN LAYER ::: Job not found")
+    void should_Be_Throws_Job_Not_Found_Exception() {
+        request = CharacterDTO.builder()
+                .name("Job_Not_Found")
+                .job("Troll")
+                .build();
+
+        assertThrows(JobNotFoundException.class, () -> gameUseCase.createCharacter(request));
     }
 }

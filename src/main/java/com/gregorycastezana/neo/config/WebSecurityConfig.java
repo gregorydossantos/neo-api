@@ -24,6 +24,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/v3/**", "/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.POST, CHARACTER_RESOURCES).permitAll()
+                        .requestMatchers(HttpMethod.GET, CHARACTER_RESOURCES).permitAll()
                         .anyRequest().authenticated())
                 .build();
     }

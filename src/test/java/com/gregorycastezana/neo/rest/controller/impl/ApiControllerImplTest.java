@@ -1,7 +1,9 @@
 package com.gregorycastezana.neo.rest.controller.impl;
 
 import com.gregorycastezana.neo.model.Characters;
+import com.gregorycastezana.neo.model.Jobs;
 import com.gregorycastezana.neo.rest.dto.request.CharacterDTO;
+import com.gregorycastezana.neo.rest.dto.response.JobsResponse;
 import com.gregorycastezana.neo.service.IGameService;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -9,23 +11,30 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import java.util.List;
 import java.util.UUID;
 
 import static com.gregorycastezana.neo.rest.path.Resources.CHARACTER_RESOURCES;
 import static io.restassured.RestAssured.given;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ApiControllerImplTest {
     static final String BASE_PATH = "/neo/api";
+    static final String RESOURCES = BASE_PATH + CHARACTER_RESOURCES ;
 
     @LocalServerPort
     int port;
@@ -35,6 +44,7 @@ class ApiControllerImplTest {
 
     CharacterDTO request;
     Characters characters;
+    List<JobsResponse> jobsResponse;
 
     @BeforeEach
     void setUp() {
@@ -42,8 +52,19 @@ class ApiControllerImplTest {
         characters = Characters.builder()
                 .id(UUID.randomUUID().toString())
                 .name("Test_Warrior")
-                .job("Warrior")
+                .job(Jobs.builder()
+                        .id(1L)
+                        .name("Warrior")
+                        .healthPoints(20L)
+                        .strength(10L)
+                        .dexterity(5L)
+                        .intelligence(5L)
+                        .attackModifier("80% of strength + 20% of dexterity")
+                        .speedModifier("60% of dexterity + 20% of intelligence")
+                        .build())
                 .build();
+
+        jobsResponse = List.of(mock(JobsResponse.class));
     }
 
     @Test
@@ -57,7 +78,7 @@ class ApiControllerImplTest {
         given()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post(BASE_PATH + CHARACTER_RESOURCES)
+                .when().post(RESOURCES)
                 .then().statusCode(HttpStatus.CREATED.value());
 
         verify(gameService, atLeastOnce()).createCharacter(request);
@@ -73,7 +94,7 @@ class ApiControllerImplTest {
         given()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post(BASE_PATH + CHARACTER_RESOURCES)
+                .when().post(RESOURCES)
                 .then().statusCode(HttpStatus.BAD_REQUEST.value());
 
     }
@@ -89,7 +110,7 @@ class ApiControllerImplTest {
         given()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post(BASE_PATH + CHARACTER_RESOURCES)
+                .when().post(RESOURCES)
                 .then().statusCode(HttpStatus.BAD_REQUEST.value());
 
     }
@@ -105,8 +126,20 @@ class ApiControllerImplTest {
         given()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post(BASE_PATH + CHARACTER_RESOURCES)
+                .when().post(RESOURCES)
                 .then().statusCode(HttpStatus.BAD_REQUEST.value());
 
     }
+
+//    @Test
+//    @DisplayName("REST LAYER ::: Should be return a list with all jobs")
+//    void should_Be_Return_A_List_With_All_Jobs() {
+//        when(gameService.getAllJobs()).thenReturn(jobsResponse);
+//
+//        given()
+//                .contentType(ContentType.JSON)
+//                .when().get(RESOURCES)
+//                .then().statusCode(HttpStatus.OK.value());
+//
+//    }
 }
