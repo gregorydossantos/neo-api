@@ -10,10 +10,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
 import static com.gregorycastezana.neo.rest.path.Resources.CHARACTER_RESOURCES;
+import static com.gregorycastezana.neo.rest.path.Resources.JOB_RESOURCES;
+import static com.gregorycastezana.neo.rest.path.Resources.V_1;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
+    private static final String CHARACTERS_PATH = V_1 + CHARACTER_RESOURCES;
+    private static final String JOBS_PATH = V_1 + JOB_RESOURCES;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -23,8 +28,9 @@ public class WebSecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/v3/**", "/swagger-ui/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, CHARACTER_RESOURCES).permitAll()
-                        .requestMatchers(HttpMethod.GET, CHARACTER_RESOURCES).permitAll()
+                        .requestMatchers(HttpMethod.POST, CHARACTERS_PATH).permitAll()
+                        .requestMatchers(HttpMethod.GET, CHARACTERS_PATH).permitAll()
+                        .requestMatchers(HttpMethod.GET, JOBS_PATH).permitAll()
                         .anyRequest().authenticated())
                 .build();
     }

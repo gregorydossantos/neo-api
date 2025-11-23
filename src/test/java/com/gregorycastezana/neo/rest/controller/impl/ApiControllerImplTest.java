@@ -1,54 +1,59 @@
 package com.gregorycastezana.neo.rest.controller.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gregorycastezana.neo.model.Characters;
 import com.gregorycastezana.neo.model.Jobs;
 import com.gregorycastezana.neo.rest.dto.request.CharacterDTO;
+import com.gregorycastezana.neo.rest.dto.response.CharactersResponse;
 import com.gregorycastezana.neo.rest.dto.response.JobsResponse;
 import com.gregorycastezana.neo.service.IGameService;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.http.HttpStatus;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.UUID;
 
 import static com.gregorycastezana.neo.rest.path.Resources.CHARACTER_RESOURCES;
-import static io.restassured.RestAssured.given;
+import static com.gregorycastezana.neo.rest.path.Resources.JOB_RESOURCES;
+import static com.gregorycastezana.neo.rest.path.Resources.V_1;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@SpringBootTest
 @ExtendWith(MockitoExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc(addFilters = false)
 class ApiControllerImplTest {
-    static final String BASE_PATH = "/neo/api";
-    static final String RESOURCES = BASE_PATH + CHARACTER_RESOURCES ;
-
-    @LocalServerPort
-    int port;
+    static final String CHARACTERS = V_1 + CHARACTER_RESOURCES;
+    static final String JOBS = V_1 + JOB_RESOURCES;
 
     @MockitoBean
     IGameService gameService;
 
+    @Autowired
+    MockMvc mockMvc;
+
+    ObjectMapper objectMapper = new ObjectMapper();
     CharacterDTO request;
     Characters characters;
     List<JobsResponse> jobsResponse;
+    List<CharactersResponse> charactersResponses;
 
     @BeforeEach
     void setUp() {
-        RestAssured.port = port;
         characters = Characters.builder()
                 .id(UUID.randomUUID().toString())
                 .name("Test_Warrior")
@@ -65,81 +70,93 @@ class ApiControllerImplTest {
                 .build();
 
         jobsResponse = List.of(mock(JobsResponse.class));
+        charactersResponses = List.of(mock(CharactersResponse.class));
     }
 
     @Test
     @DisplayName("REST LAYER ::: Should be return a http status 201 - CREATED")
-    void should_Be_Return_Success_When_Create_Character() {
+    void should_Be_Return_Success_When_Create_Character() throws Exception {
         request = CharacterDTO.builder()
                 .name("Test_Warrior")
                 .job("Warrior")
                 .build();
 
-        given()
-                .contentType(ContentType.JSON)
-                .body(request)
-                .when().post(RESOURCES)
-                .then().statusCode(HttpStatus.CREATED.value());
+        mockMvc
+                .perform(post(CHARACTERS)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated());
 
         verify(gameService, atLeastOnce()).createCharacter(request);
     }
 
     @Test
     @DisplayName("REST LAYER ::: Should be return a http status 404 - BAD_REQUEST - WITHOUT NAME AT PAYLOAD")
-    void should_Be_Return_Error_When_Create_Character_Without_Name_Attribute() {
+    void should_Be_Return_Error_When_Create_Character_Without_Name_Attribute() throws Exception {
         request = CharacterDTO.builder()
                 .job("Warrior")
                 .build();
 
-        given()
-                .contentType(ContentType.JSON)
-                .body(request)
-                .when().post(RESOURCES)
-                .then().statusCode(HttpStatus.BAD_REQUEST.value());
-
+        mockMvc
+                .perform(post(CHARACTERS)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
     @DisplayName("REST LAYER ::: Should be return a http status 404 - BAD_REQUEST - WITH NAME NULL")
-    void should_Be_Return_Error_When_Create_Character_With_Name_Null() {
+    void should_Be_Return_Error_When_Create_Character_With_Name_Null() throws Exception {
         request = CharacterDTO.builder()
                 .name(null)
                 .job("Warrior")
                 .build();
 
-        given()
-                .contentType(ContentType.JSON)
-                .body(request)
-                .when().post(RESOURCES)
-                .then().statusCode(HttpStatus.BAD_REQUEST.value());
-
+        mockMvc
+                .perform(post(CHARACTERS)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
     @DisplayName("REST LAYER ::: Should be return a http status 404 - BAD_REQUEST - WITH NAME BLANK")
-    void should_Be_Return_Error_When_Create_Character_With_Name_Blank() {
+    void should_Be_Return_Error_When_Create_Character_With_Name_Blank() throws Exception {
         request = CharacterDTO.builder()
                 .name(" ")
                 .job("Warrior")
                 .build();
 
-        given()
-                .contentType(ContentType.JSON)
-                .body(request)
-                .when().post(RESOURCES)
-                .then().statusCode(HttpStatus.BAD_REQUEST.value());
-
+        mockMvc
+                .perform(post(CHARACTERS)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().is4xxClientError());
     }
 
-//    @Test
-//    @DisplayName("REST LAYER ::: Should be return a list with all jobs")
-//    void should_Be_Return_A_List_With_All_Jobs() {
-//        when(gameService.getAllJobs()).thenReturn(jobsResponse);
-//
-//        given()
-//                .contentType(ContentType.JSON)
-//                .when().get(RESOURCES)
-//                .then().statusCode(HttpStatus.OK.value());
-//
-//    }
+    @Test
+    @DisplayName("REST LAYER ::: Should be return a list with all jobs")
+    void should_Be_Return_A_List_With_All_Jobs() throws Exception {
+        when(gameService.getAllJobs()).thenReturn(jobsResponse);
+
+        mockMvc
+                .perform(get(JOBS)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(gameService, atLeastOnce()).getAllJobs();
+    }
+
+    @Test
+    @DisplayName("REST LAYER ::: Should be return a list with all characters")
+    void should_Be_Return_A_List_With_All_Characters() throws Exception {
+        when(gameService.getAllCharacters()).thenReturn(charactersResponses);
+
+        mockMvc
+                .perform(get(CHARACTERS)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(gameService, atLeastOnce()).getAllCharacters();
+    }
 }

@@ -2,6 +2,7 @@ package com.gregorycastezana.neo.service.impl;
 
 import com.gregorycastezana.neo.domain.usecase.IGameUseCase;
 import com.gregorycastezana.neo.rest.dto.request.CharacterDTO;
+import com.gregorycastezana.neo.rest.dto.response.CharactersResponse;
 import com.gregorycastezana.neo.rest.dto.response.JobsResponse;
 import com.gregorycastezana.neo.service.IGameService;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +28,10 @@ public class GameServiceImpl implements IGameService {
     @Override
     public List<JobsResponse> getAllJobs() {
         return gameUseCase.getAllJobs();
+    }
+
+    @Override
+    public List<CharactersResponse> getAllCharacters() {
+        return gameUseCase.getAllCharacters();
     }
 }

@@ -2,6 +2,7 @@ package com.gregorycastezana.neo.domain.usecase.impl;
 
 import com.gregorycastezana.neo.domain.mapper.IGameMapper;
 import com.gregorycastezana.neo.rest.dto.request.CharacterDTO;
+import com.gregorycastezana.neo.rest.dto.response.CharactersResponse;
 import com.gregorycastezana.neo.rest.dto.response.JobsResponse;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterDataIntegrityException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNameException;
@@ -47,7 +48,7 @@ class GameUseCaseImplTest {
 
     @Test
     @DisplayName("DOMAIN LAYER ::: Get all Jobs")
-    void should_Be_A_List_With_All_Jobs() {
+    void should_Be_Return_A_List_With_All_Jobs() {
         when(mapper.toListResponse(anyList())).thenReturn(List.of(mock(JobsResponse.class)));
         assertNotNull(gameUseCase.getAllJobs());
     }
@@ -105,5 +106,12 @@ class GameUseCaseImplTest {
                 .build();
 
         assertThrows(JobNotFoundException.class, () -> gameUseCase.createCharacter(request));
+    }
+
+    @Test
+    @DisplayName("DOMAIN LAYER ::: Get all Characters")
+    void should_Be_Return_A_List_With_All_Characters() {
+        when(mapper.toCharactersListResponse(anyList())).thenReturn(List.of(mock(CharactersResponse.class)));
+        assertNotNull(gameUseCase.getAllCharacters());
     }
 }
