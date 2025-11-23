@@ -2,8 +2,8 @@ package com.gregorycastezana.neo.domain.usecase.impl;
 
 import com.gregorycastezana.neo.domain.mapper.IGameMapper;
 import com.gregorycastezana.neo.rest.dto.request.CharacterDTO;
+import com.gregorycastezana.neo.rest.dto.response.CharactersDetailsResponse;
 import com.gregorycastezana.neo.rest.dto.response.CharactersResponse;
-import com.gregorycastezana.neo.rest.dto.response.JobsResponse;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterDataIntegrityException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNameException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNameSizeException;
@@ -20,6 +20,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -49,7 +50,6 @@ class GameUseCaseImplTest {
     @Test
     @DisplayName("DOMAIN LAYER ::: Get all Jobs")
     void should_Be_Return_A_List_With_All_Jobs() {
-        when(mapper.toListResponse(anyList())).thenReturn(List.of(mock(JobsResponse.class)));
         assertNotNull(gameUseCase.getAllJobs());
     }
 
@@ -113,5 +113,12 @@ class GameUseCaseImplTest {
     void should_Be_Return_A_List_With_All_Characters() {
         when(mapper.toCharactersListResponse(anyList())).thenReturn(List.of(mock(CharactersResponse.class)));
         assertNotNull(gameUseCase.getAllCharacters());
+    }
+
+    @Test
+    @DisplayName("DOMAIN LAYER ::: Get details about one character")
+    void should_Be_Return_Details_About_One_Character() {
+        when(mapper.toDetailsResponse(any())).thenReturn(mock(CharactersDetailsResponse.class));
+        assertNotNull(gameUseCase.details("Oz_Mage"));
     }
 }

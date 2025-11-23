@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gregorycastezana.neo.model.Characters;
 import com.gregorycastezana.neo.model.Jobs;
 import com.gregorycastezana.neo.rest.dto.request.CharacterDTO;
+import com.gregorycastezana.neo.rest.dto.response.CharactersDetailsResponse;
 import com.gregorycastezana.neo.rest.dto.response.CharactersResponse;
 import com.gregorycastezana.neo.rest.dto.response.JobsResponse;
 import com.gregorycastezana.neo.service.IGameService;
@@ -23,8 +24,10 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.gregorycastezana.neo.rest.path.Resources.CHARACTER_RESOURCES;
+import static com.gregorycastezana.neo.rest.path.Resources.JOB_DETAILS_RESOURCES;
 import static com.gregorycastezana.neo.rest.path.Resources.JOB_RESOURCES;
 import static com.gregorycastezana.neo.rest.path.Resources.V_1;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -39,6 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ApiControllerImplTest {
     static final String CHARACTERS = V_1 + CHARACTER_RESOURCES;
     static final String JOBS = V_1 + JOB_RESOURCES;
+    static final String JOBS_DETAILS = V_1 + JOB_DETAILS_RESOURCES;
 
     @MockitoBean
     IGameService gameService;
@@ -158,5 +162,18 @@ class ApiControllerImplTest {
                 .andExpect(status().isOk());
 
         verify(gameService, atLeastOnce()).getAllCharacters();
+    }
+
+    @Test
+    @DisplayName("REST LAYER ::: Should be return details about one character")
+    void should_Be_Return_Details_About_One_Character() throws Exception {
+        when(gameService.details(anyString())).thenReturn(mock(CharactersDetailsResponse.class));
+
+        mockMvc
+                .perform(get(JOBS_DETAILS).param("name", "/Oz_Mage")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(gameService, atLeastOnce()).details(anyString());
     }
 }
