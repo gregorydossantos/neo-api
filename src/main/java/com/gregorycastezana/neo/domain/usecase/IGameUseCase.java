@@ -1,6 +1,7 @@
 package com.gregorycastezana.neo.domain.usecase;
 
 import com.gregorycastezana.neo.rest.dto.request.CharacterDTO;
+import com.gregorycastezana.neo.rest.dto.response.CharactersDetailsResponse;
 import com.gregorycastezana.neo.rest.dto.response.CharactersResponse;
 import com.gregorycastezana.neo.rest.dto.response.JobsResponse;
 
@@ -13,4 +14,6 @@ public interface IGameUseCase {
     List<JobsResponse> getAllJobs();
 
     List<CharactersResponse> getAllCharacters();
+
+    CharactersDetailsResponse details(String name);
 }

@@ -2,6 +2,7 @@ package com.gregorycastezana.neo.rest.controller.impl;
 
 import com.gregorycastezana.neo.rest.controller.ApiController;
 import com.gregorycastezana.neo.rest.dto.request.CharacterDTO;
+import com.gregorycastezana.neo.rest.dto.response.CharactersDetailsResponse;
 import com.gregorycastezana.neo.rest.dto.response.CharactersResponse;
 import com.gregorycastezana.neo.rest.dto.response.JobsResponse;
 import com.gregorycastezana.neo.service.IGameService;
@@ -13,11 +14,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.gregorycastezana.neo.rest.path.Resources.CHARACTER_RESOURCES;
 import static com.gregorycastezana.neo.rest.path.Resources.V_1;
 import static lombok.AccessLevel.PRIVATE;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -58,5 +59,14 @@ public class ApiControllerImpl implements ApiController {
     @Override
     public ResponseEntity<List<CharactersResponse>> listAllCharacters() {
         return ResponseEntity.ok(gameService.getAllCharacters());
+    }
+
+    @Operation(summary = "Get details about a character", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return details about selected character"),
+    })
+    @Override
+    public ResponseEntity<CharactersDetailsResponse> details(@RequestParam("name") String name) {
+        return ResponseEntity.ok(gameService.details(name));
     }
 }

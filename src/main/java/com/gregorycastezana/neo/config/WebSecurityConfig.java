@@ -10,6 +10,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
 import static com.gregorycastezana.neo.rest.path.Resources.CHARACTER_RESOURCES;
+import static com.gregorycastezana.neo.rest.path.Resources.JOB_DETAILS_RESOURCES;
 import static com.gregorycastezana.neo.rest.path.Resources.JOB_RESOURCES;
 import static com.gregorycastezana.neo.rest.path.Resources.V_1;
 
@@ -18,6 +19,7 @@ import static com.gregorycastezana.neo.rest.path.Resources.V_1;
 public class WebSecurityConfig {
     private static final String CHARACTERS_PATH = V_1 + CHARACTER_RESOURCES;
     private static final String JOBS_PATH = V_1 + JOB_RESOURCES;
+    private static final String JOBS_DETAILS = V_1 + JOB_DETAILS_RESOURCES;
 
 
     @Bean
@@ -31,6 +33,7 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.POST, CHARACTERS_PATH).permitAll()
                         .requestMatchers(HttpMethod.GET, CHARACTERS_PATH).permitAll()
                         .requestMatchers(HttpMethod.GET, JOBS_PATH).permitAll()
+                        .requestMatchers(HttpMethod.GET, JOBS_DETAILS).permitAll()
                         .anyRequest().authenticated())
                 .build();
     }

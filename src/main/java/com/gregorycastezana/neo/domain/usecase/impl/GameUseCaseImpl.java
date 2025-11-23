@@ -6,11 +6,14 @@ import com.gregorycastezana.neo.model.Characters;
 import com.gregorycastezana.neo.model.Jobs;
 import com.gregorycastezana.neo.rest.dto.request.CharacterDTO;
 import com.gregorycastezana.neo.rest.dto.request.CharacterListDTO;
+import com.gregorycastezana.neo.rest.dto.request.DetailsDTO;
+import com.gregorycastezana.neo.rest.dto.response.CharactersDetailsResponse;
 import com.gregorycastezana.neo.rest.dto.response.CharactersResponse;
 import com.gregorycastezana.neo.rest.dto.response.JobsResponse;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterDataIntegrityException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNameException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNameSizeException;
+import com.gregorycastezana.neo.rest.exceptionhandler.exception.DetailsNotFoundException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.JobNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -25,6 +28,7 @@ import static com.gregorycastezana.neo.domain.constants.StatusEnum.ALIVE;
 import static com.gregorycastezana.neo.domain.constants.StatusEnum.DEAD;
 import static com.gregorycastezana.neo.domain.message.CommonsMessages.CHARACTER_ALREADY_REGISTER;
 import static com.gregorycastezana.neo.domain.message.CommonsMessages.INVALID_CHARACTER_NAME;
+import static com.gregorycastezana.neo.domain.message.CommonsMessages.JOB_DETAILS_NOT_FOUND;
 import static com.gregorycastezana.neo.domain.message.CommonsMessages.JOB_NOT_FOUND;
 import static com.gregorycastezana.neo.domain.message.CommonsMessages.SIZE_NAME_INVALID;
 import static com.gregorycastezana.neo.domain.useful.StringPattern.isValidName;
@@ -81,6 +85,12 @@ public class GameUseCaseImpl implements IGameUseCase {
         return gameMapper.toCharactersListResponse(charactersDto);
     }
 
+    @Override
+    public CharactersDetailsResponse details(String name) {
+        var detailsDto = buildDetailsDto(name);
+        return gameMapper.toDetailsResponse(detailsDto);
+    }
+
     private boolean characterExists(String name) {
         return characters.stream().anyMatch(c ->
                 c.getName().equalsIgnoreCase(name));
@@ -111,6 +121,23 @@ public class GameUseCaseImpl implements IGameUseCase {
             return ALIVE.getStatus();
         }
         return DEAD.getStatus();
+    }
+
+    private DetailsDTO buildDetailsDto(String name) {
+        var charDetails  = characters.stream().filter(
+                c -> c.getName().equalsIgnoreCase(name)).findFirst()
+                .orElseThrow(() -> new DetailsNotFoundException(JOB_DETAILS_NOT_FOUND));
+
+        return DetailsDTO.builder()
+                .name(charDetails.getName())
+                .job(charDetails.getJob().getName())
+                .healthPoints(charDetails.getJob().getHealthPoints())
+                .strength(charDetails.getJob().getStrength())
+                .dexterity(charDetails.getJob().getDexterity())
+                .intelligence(charDetails.getJob().getIntelligence())
+                .attackModifier(charDetails.getJob().getAttackModifier())
+                .speedModifier(charDetails.getJob().getSpeedModifier())
+                .build();
     }
 
     private List<Characters> initializeCharactersData(List<Jobs> jobs) {

@@ -3,6 +3,7 @@ package com.gregorycastezana.neo.rest.exceptionhandler;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterDataIntegrityException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNameException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNameSizeException;
+import com.gregorycastezana.neo.rest.exceptionhandler.exception.DetailsNotFoundException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.JobNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -74,6 +75,15 @@ class GameExceptionHandlerTest {
         ResponseEntity<ErrorResponse> response = gameExceptionHandler.jobNotFound(
                 new JobNotFoundException(JOB_NOT_FOUND));
         assertNotNull(response);
-        assertEquals(HttpStatus.NOT_ACCEPTABLE, response.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("REST LAYER ::: Should be throws Details Not Found Exception")
+    void should_Be_Throws_Details_Not_Found_Exception() {
+        ResponseEntity<ErrorResponse> response = gameExceptionHandler.detailsNotFound(
+                new DetailsNotFoundException(JOB_NOT_FOUND));
+        assertNotNull(response);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 }
