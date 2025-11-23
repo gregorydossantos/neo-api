@@ -2,6 +2,7 @@ package com.gregorycastezana.neo.service.impl;
 
 import com.gregorycastezana.neo.domain.usecase.IGameUseCase;
 import com.gregorycastezana.neo.rest.dto.request.CharacterDTO;
+import com.gregorycastezana.neo.rest.dto.response.CharactersResponse;
 import com.gregorycastezana.neo.rest.dto.response.JobsResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,12 +46,14 @@ class GameServiceImplTest {
     @Test
     @DisplayName("SERVICE LAYER ::: Return a list of all jobs")
     void should_Be_Return_List_With_All_Jobs() {
-        var request = CharacterDTO.builder()
-                .name("Test_Warrior")
-                .job("Warrior")
-                .build();
-
         when(gameUseCase.getAllJobs()).thenReturn(List.of(mock(JobsResponse.class)));
         assertNotNull(gameService.getAllJobs());
+    }
+
+    @Test
+    @DisplayName("SERVICE LAYER ::: Return a list of all characters")
+    void should_Be_Return_List_With_All_characters() {
+        when(gameUseCase.getAllCharacters()).thenReturn(List.of(mock(CharactersResponse.class)));
+        assertNotNull(gameService.getAllCharacters());
     }
 }

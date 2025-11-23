@@ -5,6 +5,8 @@ import com.gregorycastezana.neo.domain.usecase.IGameUseCase;
 import com.gregorycastezana.neo.model.Characters;
 import com.gregorycastezana.neo.model.Jobs;
 import com.gregorycastezana.neo.rest.dto.request.CharacterDTO;
+import com.gregorycastezana.neo.rest.dto.request.CharacterListDTO;
+import com.gregorycastezana.neo.rest.dto.response.CharactersResponse;
 import com.gregorycastezana.neo.rest.dto.response.JobsResponse;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterDataIntegrityException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNameException;
@@ -19,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.gregorycastezana.neo.domain.constants.StatusEnum.ALIVE;
+import static com.gregorycastezana.neo.domain.constants.StatusEnum.DEAD;
 import static com.gregorycastezana.neo.domain.message.CommonsMessages.CHARACTER_ALREADY_REGISTER;
 import static com.gregorycastezana.neo.domain.message.CommonsMessages.INVALID_CHARACTER_NAME;
 import static com.gregorycastezana.neo.domain.message.CommonsMessages.JOB_NOT_FOUND;
@@ -35,6 +39,7 @@ public class GameUseCaseImpl implements IGameUseCase {
     private static final String CREATING_NEW_CHARACTER = "Creating a new character based on request: {}";
     private static final String VALIDATE_CHARACTER = "Validate if character already exists by name {}";
     private static final String CHARACTER_CREATED = "Character successfully created!";
+    private static final String DETAILS = "Click here";
 
     List<Jobs> jobs = initializeJobsData();
     List<Characters> characters = initializeCharactersData(jobs);
@@ -70,6 +75,12 @@ public class GameUseCaseImpl implements IGameUseCase {
         return gameMapper.toListResponse(jobs);
     }
 
+    @Override
+    public List<CharactersResponse> getAllCharacters() {
+        var charactersDto = buildCharactersList(characters);
+        return gameMapper.toCharactersListResponse(charactersDto);
+    }
+
     private boolean characterExists(String name) {
         return characters.stream().anyMatch(c ->
                 c.getName().equalsIgnoreCase(name));
@@ -78,6 +89,28 @@ public class GameUseCaseImpl implements IGameUseCase {
     private Jobs getJobByName(String name) {
         return jobs.stream().filter(j -> j.getName().equalsIgnoreCase(name)).findFirst()
                 .orElseThrow(() -> new JobNotFoundException(JOB_NOT_FOUND));
+    }
+
+    private List<CharacterListDTO> buildCharactersList(List<Characters> characters) {
+        List<CharacterListDTO> response = new ArrayList<>();
+        for (Characters c : characters) {
+            response.add(
+                    CharacterListDTO.builder()
+                            .name(c.getName())
+                            .job(c.getJob().getName())
+                            .status(setStatus(c.getJob().getHealthPoints()))
+                            .details(DETAILS)
+                            .build()
+            );
+        }
+        return response;
+    }
+
+    private String setStatus(Long hp) {
+        if (hp > 0) {
+            return ALIVE.getStatus();
+        }
+        return DEAD.getStatus();
     }
 
     private List<Characters> initializeCharactersData(List<Jobs> jobs) {

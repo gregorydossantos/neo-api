@@ -112,6 +112,7 @@
                     <excludes>
                         <exclude>**/NeoApplication.class</exclude>
                         <exclude>**/config/**</exclude>
+                        <exclude>**/domain/constants/**</exclude>
                         <exclude>**/domain/message/**</exclude>
                         <exclude>**/domain/useful/**</exclude>
                         <exclude>**/model/**</exclude>
