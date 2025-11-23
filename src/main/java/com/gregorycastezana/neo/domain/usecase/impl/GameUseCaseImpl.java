@@ -96,8 +96,8 @@ public class GameUseCaseImpl implements IGameUseCase {
         for (Characters c : characters) {
             response.add(
                     CharacterListDTO.builder()
-                            .name(c.getName())
-                            .job(c.getJob().getName())
+                            .characterName(c.getName())
+                            .jobName(c.getJob().getName())
                             .status(setStatus(c.getJob().getHealthPoints()))
                             .details(DETAILS)
                             .build()

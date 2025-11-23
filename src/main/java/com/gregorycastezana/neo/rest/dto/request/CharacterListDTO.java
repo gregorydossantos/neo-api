@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 @Builder
 public class CharacterListDTO {
-    private String name;
-    private String job;
+    private String characterName;
+    private String jobName;
     private String status;
     private String details;
 }
