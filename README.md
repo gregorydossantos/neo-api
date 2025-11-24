@@ -14,7 +14,7 @@ and implements SOLID and clean code concepts.
 
 ### Running API (local):
 If you don't already have them, install JDK 17 and Apache Maven (minimum version 3.6 or later), then clone the project 
-repository from GitHub, run it with your preferred IDE, and use the collections located in the project's Collection 
+repository from GitHub (https://github.com/gregorydossantos/neo-api), run it with your preferred IDE, and use the collections located in the project's Collection 
 directory to make API calls.
 
 ### Documentation (Swagger - Endpoints):
