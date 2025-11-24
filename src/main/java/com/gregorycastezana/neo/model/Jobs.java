@@ -18,4 +18,6 @@ public class Jobs {
     Long intelligence;
     String attackModifier;
     String speedModifier;
+    Double attack = 0.0;
+    Double speed = 0.0;
 }

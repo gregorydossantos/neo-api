@@ -2,10 +2,12 @@ package com.gregorycastezana.neo.domain.usecase.impl;
 
 import com.gregorycastezana.neo.domain.mapper.IGameMapper;
 import com.gregorycastezana.neo.rest.dto.request.CharacterDTO;
-import com.gregorycastezana.neo.rest.dto.response.JobsResponse;
+import com.gregorycastezana.neo.rest.dto.response.CharactersDetailsResponse;
+import com.gregorycastezana.neo.rest.dto.response.CharactersResponse;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterDataIntegrityException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNameException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNameSizeException;
+import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNotFoundException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.JobNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +21,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -47,8 +51,7 @@ class GameUseCaseImplTest {
 
     @Test
     @DisplayName("DOMAIN LAYER ::: Get all Jobs")
-    void should_Be_A_List_With_All_Jobs() {
-        when(mapper.toListResponse(anyList())).thenReturn(List.of(mock(JobsResponse.class)));
+    void should_Be_Return_A_List_With_All_Jobs() {
         assertNotNull(gameUseCase.getAllJobs());
     }
 
@@ -105,5 +108,37 @@ class GameUseCaseImplTest {
                 .build();
 
         assertThrows(JobNotFoundException.class, () -> gameUseCase.createCharacter(request));
+    }
+
+    @Test
+    @DisplayName("DOMAIN LAYER ::: Get all Characters")
+    void should_Be_Return_A_List_With_All_Characters() {
+        when(mapper.toCharactersListResponse(anyList())).thenReturn(List.of(mock(CharactersResponse.class)));
+        assertNotNull(gameUseCase.getAllCharacters());
+    }
+
+    @Test
+    @DisplayName("DOMAIN LAYER ::: Get details about one character")
+    void should_Be_Return_Details_About_One_Character() {
+        when(mapper.toDetailsResponse(any())).thenReturn(mock(CharactersDetailsResponse.class));
+        assertNotNull(gameUseCase.details("Oz_Mage"));
+    }
+
+    @Test
+    @DisplayName("DOMAIN LAYER ::: Starting a battle between Warrior and Mage")
+    void should_Be_Start_Battle_Between_Warrior_And_Mage_Successfully() {
+        gameUseCase.battle("Great_Warrior", "Oz_Mage");
+    }
+
+    @Test
+    @DisplayName("DOMAIN LAYER ::: Starting a battle between Mage and Thief")
+    void should_Be_Start_Battle_Between_Mage_And_Thief_Successfully() {
+        gameUseCase.battle("Oz_Mage", "Thief_001");
+    }
+
+    @Test
+    @DisplayName("DOMAIN LAYER ::: Should be throws Character Not Found Exception")
+    void should_Be_Throw_Character_Not_Found_Exception() {
+        assertThrows(CharacterNotFoundException.class, () -> gameUseCase.battle(" ", " "));
     }
 }

@@ -3,6 +3,8 @@ package com.gregorycastezana.neo.rest.exceptionhandler;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterDataIntegrityException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNameException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNameSizeException;
+import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNotFoundException;
+import com.gregorycastezana.neo.rest.exceptionhandler.exception.DetailsNotFoundException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.JobNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +14,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import static com.gregorycastezana.neo.domain.message.CommonsMessages.CHARACTER_ALREADY_REGISTER;
+import static com.gregorycastezana.neo.domain.message.CommonsMessages.CHARACTER_NOT_FOUND;
 import static com.gregorycastezana.neo.domain.message.CommonsMessages.INVALID_CHARACTER_NAME;
+import static com.gregorycastezana.neo.domain.message.CommonsMessages.JOB_DETAILS_NOT_FOUND;
 import static com.gregorycastezana.neo.domain.message.CommonsMessages.JOB_NOT_FOUND;
 import static com.gregorycastezana.neo.domain.message.CommonsMessages.SIZE_NAME_INVALID;
 
@@ -50,6 +54,18 @@ public class GameExceptionHandler {
     @ExceptionHandler(JobNotFoundException.class)
     public ResponseEntity<ErrorResponse> jobNotFound(final JobNotFoundException ex) {
         ErrorResponse error = new ErrorResponse(JOB_NOT_FOUND);
-        return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DetailsNotFoundException.class)
+    public ResponseEntity<ErrorResponse> detailsNotFound(final DetailsNotFoundException ex) {
+        ErrorResponse error = new ErrorResponse(JOB_DETAILS_NOT_FOUND);
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CharacterNotFoundException.class)
+    public ResponseEntity<ErrorResponse> characterNotFound(final CharacterNotFoundException ex) {
+        ErrorResponse error = new ErrorResponse(CHARACTER_NOT_FOUND);
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 }

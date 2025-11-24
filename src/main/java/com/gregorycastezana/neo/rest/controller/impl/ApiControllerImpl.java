@@ -2,6 +2,8 @@ package com.gregorycastezana.neo.rest.controller.impl;
 
 import com.gregorycastezana.neo.rest.controller.ApiController;
 import com.gregorycastezana.neo.rest.dto.request.CharacterDTO;
+import com.gregorycastezana.neo.rest.dto.response.CharactersDetailsResponse;
+import com.gregorycastezana.neo.rest.dto.response.CharactersResponse;
 import com.gregorycastezana.neo.rest.dto.response.JobsResponse;
 import com.gregorycastezana.neo.service.IGameService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,16 +13,21 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.gregorycastezana.neo.rest.path.Resources.V_1;
 import static lombok.AccessLevel.PRIVATE;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Game Features")
+@RequestMapping(V_1)
 @FieldDefaults(makeFinal = true, level = PRIVATE)
 public class ApiControllerImpl implements ApiController {
 
@@ -44,5 +51,34 @@ public class ApiControllerImpl implements ApiController {
     @Override
     public ResponseEntity<List<JobsResponse>> listAllJobs() {
         return ResponseEntity.ok(gameService.getAllJobs());
+    }
+
+    @Operation(summary = "List all characters", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return a list with all the characters"),
+    })
+    @Override
+    public ResponseEntity<List<CharactersResponse>> listAllCharacters() {
+        return ResponseEntity.ok(gameService.getAllCharacters());
+    }
+
+    @Operation(summary = "Get details about a character", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return details about selected character"),
+    })
+    @Override
+    public ResponseEntity<CharactersDetailsResponse> details(@RequestParam("name") String name) {
+        return ResponseEntity.ok(gameService.details(name));
+    }
+
+    @Operation(summary = "Starting a battle", method = "POST")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Battle is finishing"),
+    })
+    @Override
+    public ResponseEntity<Void> battle(@RequestParam("character_one") String c1,
+                                       @RequestParam("character_two") String c2) {
+        gameService.battle(c1, c2);
+        return ResponseEntity.status(NO_CONTENT).build();
     }
 }
