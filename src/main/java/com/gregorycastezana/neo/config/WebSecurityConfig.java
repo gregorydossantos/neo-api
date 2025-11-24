@@ -31,7 +31,10 @@ public class WebSecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/v3/**", "/swagger-ui/**").permitAll()
+                        .requestMatchers("/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/swagger-ui.html").permitAll()
                         .requestMatchers(HttpMethod.POST, CHARACTERS_PATH).permitAll()
                         .requestMatchers(HttpMethod.GET, CHARACTERS_PATH).permitAll()
                         .requestMatchers(HttpMethod.GET, JOBS_PATH).permitAll()

@@ -71,6 +71,10 @@ public class ApiControllerImpl implements ApiController {
         return ResponseEntity.ok(gameService.details(name));
     }
 
+    @Operation(summary = "Starting a battle", method = "POST")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Battle is finishing"),
+    })
     @Override
     public ResponseEntity<Void> battle(@RequestParam("character_one") String c1,
                                        @RequestParam("character_two") String c2) {
