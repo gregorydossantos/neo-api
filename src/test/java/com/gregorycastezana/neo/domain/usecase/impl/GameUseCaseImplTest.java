@@ -125,9 +125,15 @@ class GameUseCaseImplTest {
     }
 
     @Test
-    @DisplayName("DOMAIN LAYER ::: Starting a battle")
-    void should_Be_Start_Battle_Successfully() {
+    @DisplayName("DOMAIN LAYER ::: Starting a battle between Warrior and Mage")
+    void should_Be_Start_Battle_Between_Warrior_And_Mage_Successfully() {
         gameUseCase.battle("Great_Warrior", "Oz_Mage");
+    }
+
+    @Test
+    @DisplayName("DOMAIN LAYER ::: Starting a battle between Mage and Thief")
+    void should_Be_Start_Battle_Between_Mage_And_Thief_Successfully() {
+        gameUseCase.battle("Oz_Mage", "Thief_001");
     }
 
     @Test
