@@ -40,4 +40,9 @@ public class GameServiceImpl implements IGameService {
     public CharactersDetailsResponse details(String name) {
         return gameUseCase.details(name);
     }
+
+    @Override
+    public void battle(String c1, String c2) {
+        gameUseCase.battle(c1, c2);
+    }
 }

@@ -22,6 +22,7 @@ import java.util.List;
 import static com.gregorycastezana.neo.rest.path.Resources.V_1;
 import static lombok.AccessLevel.PRIVATE;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
 @RequiredArgsConstructor
@@ -68,5 +69,12 @@ public class ApiControllerImpl implements ApiController {
     @Override
     public ResponseEntity<CharactersDetailsResponse> details(@RequestParam("name") String name) {
         return ResponseEntity.ok(gameService.details(name));
+    }
+
+    @Override
+    public ResponseEntity<Void> battle(@RequestParam("character_one") String c1,
+                                       @RequestParam("character_two") String c2) {
+        gameService.battle(c1, c2);
+        return ResponseEntity.status(NO_CONTENT).build();
     }
 }

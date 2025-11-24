@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
+import static com.gregorycastezana.neo.rest.path.Resources.BATTLE_RESOURCES;
 import static com.gregorycastezana.neo.rest.path.Resources.CHARACTER_RESOURCES;
 import static com.gregorycastezana.neo.rest.path.Resources.JOB_DETAILS_RESOURCES;
 import static com.gregorycastezana.neo.rest.path.Resources.JOB_RESOURCES;
@@ -31,4 +32,8 @@ public interface ApiController {
 
     @GetMapping(value = JOB_DETAILS_RESOURCES, consumes = APPLICATION_JSON_VALUE)
     ResponseEntity<CharactersDetailsResponse> details(@RequestParam("name") String name);
+
+    @PostMapping(value = BATTLE_RESOURCES, consumes = APPLICATION_JSON_VALUE)
+    ResponseEntity<Void> battle(@RequestParam("character_one") String c1,
+                                @RequestParam("character_two") String c2);
 }

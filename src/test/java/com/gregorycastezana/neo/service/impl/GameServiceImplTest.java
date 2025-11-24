@@ -65,4 +65,10 @@ class GameServiceImplTest {
         when(gameUseCase.details(anyString())).thenReturn(mock(CharactersDetailsResponse.class));
         assertNotNull(gameService.details(anyString()));
     }
+
+    @Test
+    @DisplayName("SERVICE LAYER ::: Starting a battle")
+    void should_Be_Start_Battle_Successfully() {
+        gameService.battle(anyString(), anyString());
+    }
 }
