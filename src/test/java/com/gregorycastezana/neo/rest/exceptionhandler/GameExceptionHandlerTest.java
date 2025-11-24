@@ -3,6 +3,7 @@ package com.gregorycastezana.neo.rest.exceptionhandler;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterDataIntegrityException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNameException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNameSizeException;
+import com.gregorycastezana.neo.rest.exceptionhandler.exception.CharacterNotFoundException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.DetailsNotFoundException;
 import com.gregorycastezana.neo.rest.exceptionhandler.exception.JobNotFoundException;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import static com.gregorycastezana.neo.domain.message.CommonsMessages.CHARACTER_ALREADY_REGISTER;
+import static com.gregorycastezana.neo.domain.message.CommonsMessages.CHARACTER_NOT_FOUND;
 import static com.gregorycastezana.neo.domain.message.CommonsMessages.INVALID_CHARACTER_NAME;
 import static com.gregorycastezana.neo.domain.message.CommonsMessages.JOB_NOT_FOUND;
 import static com.gregorycastezana.neo.domain.message.CommonsMessages.SIZE_NAME_INVALID;
@@ -83,6 +85,15 @@ class GameExceptionHandlerTest {
     void should_Be_Throws_Details_Not_Found_Exception() {
         ResponseEntity<ErrorResponse> response = gameExceptionHandler.detailsNotFound(
                 new DetailsNotFoundException(JOB_NOT_FOUND));
+        assertNotNull(response);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("REST LAYER ::: Should be throws Character Not Found Exception")
+    void should_Be_Throws_Character_Not_Found_Exception() {
+        ResponseEntity<ErrorResponse> response = gameExceptionHandler.characterNotFound(
+                new CharacterNotFoundException(CHARACTER_NOT_FOUND));
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }

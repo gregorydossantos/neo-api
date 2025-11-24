@@ -16,4 +16,6 @@ public interface IGameUseCase {
     List<CharactersResponse> getAllCharacters();
 
     CharactersDetailsResponse details(String name);
+
+    void battle(String c1, String c2);
 }

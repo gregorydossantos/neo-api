@@ -23,12 +23,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 import java.util.UUID;
 
+import static com.gregorycastezana.neo.rest.path.Resources.BATTLE_RESOURCES;
 import static com.gregorycastezana.neo.rest.path.Resources.CHARACTER_RESOURCES;
 import static com.gregorycastezana.neo.rest.path.Resources.JOB_DETAILS_RESOURCES;
 import static com.gregorycastezana.neo.rest.path.Resources.JOB_RESOURCES;
 import static com.gregorycastezana.neo.rest.path.Resources.V_1;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -43,6 +45,7 @@ class ApiControllerImplTest {
     static final String CHARACTERS = V_1 + CHARACTER_RESOURCES;
     static final String JOBS = V_1 + JOB_RESOURCES;
     static final String JOBS_DETAILS = V_1 + JOB_DETAILS_RESOURCES;
+    static final String BATTLES = V_1 + BATTLE_RESOURCES;
 
     @MockitoBean
     IGameService gameService;
@@ -170,10 +173,25 @@ class ApiControllerImplTest {
         when(gameService.details(anyString())).thenReturn(mock(CharactersDetailsResponse.class));
 
         mockMvc
-                .perform(get(JOBS_DETAILS).param("name", "/Oz_Mage")
+                .perform(get(JOBS_DETAILS).param("name", "Oz_Mage")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         verify(gameService, atLeastOnce()).details(anyString());
+    }
+
+    @Test
+    @DisplayName("REST LAYER ::: Should be return a http status 204 - NO CONTENT")
+    void should_Be_Return_Http_Status_No_Content() throws Exception {
+        doNothing().when(gameService).battle(anyString(), anyString());
+
+        mockMvc
+                .perform(post(BATTLES)
+                        .param("character_one", "Great_Warrior")
+                        .param("character_two", "Oz_Mage")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        verify(gameService, atLeastOnce()).battle("Great_Warrior", "Oz_Mage");
     }
 }
